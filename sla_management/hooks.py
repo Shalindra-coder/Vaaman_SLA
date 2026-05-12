@@ -19,10 +19,10 @@ doc_events = {
 # Scheduled Tasks
 scheduler_events = {
 	"hourly": [
-		"sla_management.scripts.sla_checker.sla_checker"
+		"sla_management.scripts.sla_checker.check_for_sla_breaches"
 	],
 	"daily": [
-		"sla_management.scripts.sla_daily_summary.sla_daily_summary"
+		"sla_management.scripts.sla_daily_summary.send_daily_sla_summary"
 	]
 }
 
