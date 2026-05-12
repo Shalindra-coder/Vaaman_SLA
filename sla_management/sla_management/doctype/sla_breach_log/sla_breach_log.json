@@ -1,0 +1,116 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-01-01 10:00:00",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "vertical",
+  "doctype_name",
+  "record_id",
+  "breached_by",
+  "stage",
+  "hours_exceeded",
+  "last_stage_change_on",
+  "breached_on",
+  "reporting_manager_email",
+  "message"
+ ],
+ "fields": [
+  {
+   "fieldname": "vertical",
+   "fieldtype": "Data",
+   "label": "Vertical",
+   "read_only": 1
+  },
+  {
+   "fieldname": "doctype_name",
+   "fieldtype": "Data",
+   "label": "Doctype Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "record_id",
+   "fieldtype": "Data",
+   "label": "Record ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "breached_by",
+   "fieldtype": "Link",
+   "label": "Breached By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "stage",
+   "fieldtype": "Data",
+   "label": "Stage",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hours_exceeded",
+   "fieldtype": "Float",
+   "label": "Hours Exceeded",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_stage_change_on",
+   "fieldtype": "Datetime",
+   "label": "Last Stage Change On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "breached_on",
+   "fieldtype": "Datetime",
+   "label": "Breached On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "reporting_manager_email",
+   "fieldtype": "Data",
+   "label": "Reporting Manager Email",
+   "read_only": 1
+  },
+  {
+   "fieldname": "message",
+   "fieldtype": "Small Text",
+   "label": "Message"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-01-20 09:57:18.134094",
+ "modified_by": "Administrator",
+ "module": "SLA Management",
+ "name": "SLA Breach Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "CRM Manager",
+   "share": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,127 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "creation": "2025-11-17 22:57:18.713347",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "vertical",
+  "applies_to",
+  "stage_field",
+  "stage_value",
+  "max_hours_allowed",
+  "responsibility",
+  "notify_to",
+  "escalate_to",
+  "active",
+  "message"
+ ],
+ "fields": [
+  {
+   "fieldname": "vertical",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Vertical",
+   "options": "\nFranchise\nPermanent Staffing\nLearning & Development\nHR Consulting\nTemporary Staffing\nAlliances/Partnerships\nPOSH\nLabour Law Advisory & Compliance",
+   "reqd": 1
+  },
+  {
+   "fieldname": "applies_to",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Applies To",
+   "options": "Lead\nOpportunity",
+   "reqd": 1
+  },
+  {
+   "fieldname": "stage_field",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Stage Field",
+   "placeholder": "e.g., status or stage",
+   "reqd": 1
+  },
+  {
+   "fieldname": "stage_value",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Stage Value",
+   "placeholder": "e.g., New, Proposal Sent"
+  },
+  {
+   "fieldname": "max_hours_allowed",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Max Hours Allowed",
+   "reqd": 1
+  },
+  {
+   "fieldname": "responsibility",
+   "fieldtype": "Link",
+   "label": "Responsibility",
+   "options": "Role"
+  },
+  {
+   "fieldname": "notify_to",
+   "fieldtype": "Small Text",
+   "label": "Notify To",
+   "placeholder": "Comma-separated email addresses"
+  },
+  {
+   "fieldname": "escalate_to",
+   "fieldtype": "Data",
+   "label": "Escalate To",
+   "placeholder": "Optional escalation email"
+  },
+  {
+   "default": "1",
+   "fieldname": "active",
+   "fieldtype": "Check",
+   "label": "Active"
+  },
+  {
+   "fieldname": "message",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Message"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-01-19 10:04:19.156657",
+ "modified_by": "Administrator",
+ "module": "SLA Management",
+ "name": "SLA Rule",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "CRM Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

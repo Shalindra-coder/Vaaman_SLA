@@ -1,0 +1,168 @@
+{
+  "test_config": {
+    "default_fallback_email": "crm-head@promptpersonnel.com",
+    "site_name": "vidhi",
+    "test_user": "test@example.com"
+  },
+  "verticals": [
+    {
+      "name": "Permanent Staffing",
+      "stages": [
+        {
+          "stage_value": "New",
+          "sla_hours": 24,
+          "applies_to": "Lead",
+          "stage_field": "status",
+          "responsibility": "Inside Sales",
+          "notify_to": "inside.sales@example.com, bdm@example.com"
+        },
+        {
+          "stage_value": "Working",
+          "sla_hours": 48,
+          "applies_to": "Lead",
+          "stage_field": "status",
+          "responsibility": "BDM",
+          "notify_to": "bdm@example.com"
+        },
+        {
+          "stage_value": "Nurturing",
+          "sla_hours": 24,
+          "applies_to": "Lead",
+          "stage_field": "status",
+          "responsibility": "Inside Sales",
+          "notify_to": "inside.sales@example.com"
+        },
+        {
+          "stage_value": "Proposal Sent",
+          "sla_hours": 72,
+          "applies_to": "Opportunity",
+          "stage_field": "stage",
+          "responsibility": "Sales Manager",
+          "notify_to": "sales.manager@example.com"
+        },
+        {
+          "stage_value": "Negotiation",
+          "sla_hours": 48,
+          "applies_to": "Opportunity",
+          "stage_field": "stage",
+          "responsibility": "Sales Manager",
+          "notify_to": "sales.manager@example.com"
+        }
+      ]
+    },
+    {
+      "name": "Temporary Staffing",
+      "stages": [
+        {
+          "stage_value": "New",
+          "sla_hours": 24,
+          "applies_to": "Lead",
+          "stage_field": "status",
+          "responsibility": "Recruiter",
+          "notify_to": "recruiter@example.com"
+        },
+        {
+          "stage_value": "Screening",
+          "sla_hours": 12,
+          "applies_to": "Lead",
+          "stage_field": "status",
+          "responsibility": "Recruiter",
+          "notify_to": "recruiter@example.com"
+        }
+      ]
+    },
+    {
+      "name": "LLC",
+      "stages": [
+        {
+          "stage_value": "New",
+          "sla_hours": 24,
+          "applies_to": "Lead",
+          "stage_field": "status",
+          "responsibility": "LLC Team",
+          "notify_to": "llc.team@example.com"
+        }
+      ]
+    },
+    {
+      "name": "Learning & Development",
+      "stages": [
+        {
+          "stage_value": "New",
+          "sla_hours": 24,
+          "applies_to": "Lead",
+          "stage_field": "status",
+          "responsibility": "L&D Team",
+          "notify_to": "ld.team@example.com"
+        }
+      ]
+    },
+    {
+      "name": "Franchise",
+      "stages": [
+        {
+          "stage_value": "New",
+          "sla_hours": 24,
+          "applies_to": "Lead",
+          "stage_field": "status",
+          "responsibility": "Franchise Team",
+          "notify_to": "franchise.team@example.com"
+        }
+      ]
+    }
+  ],
+  "reporting_hierarchy": [
+    {
+      "email": "user1@example.com",
+      "full_name": "Test User 1",
+      "reporting_manager_email": "manager1@example.com",
+      "department": "Sales",
+      "designation": "BDM"
+    },
+    {
+      "email": "user2@example.com",
+      "full_name": "Test User 2",
+      "reporting_manager_email": "manager2@example.com",
+      "department": "Sales",
+      "designation": "Recruiter"
+    },
+    {
+      "email": "user3@example.com",
+      "full_name": "Test User 3",
+      "reporting_manager_email": null,
+      "department": "Sales",
+      "designation": "Inside Sales"
+    }
+  ],
+  "test_scenarios": {
+    "breach_detection": {
+      "description": "Test SLA breach detection",
+      "steps": [
+        "Create Lead/Opportunity with matching vertical and stage",
+        "Set last_stage_change_on to exceed SLA hours",
+        "Run SLA checker",
+        "Verify breach log created",
+        "Verify notification sent"
+      ]
+    },
+    "no_breach": {
+      "description": "Test no breach when within SLA",
+      "steps": [
+        "Create Lead/Opportunity with matching vertical and stage",
+        "Set last_stage_change_on within SLA hours",
+        "Run SLA checker",
+        "Verify no breach log created"
+      ]
+    },
+    "daily_summary": {
+      "description": "Test daily email summary",
+      "steps": [
+        "Create multiple breaches",
+        "Run daily summary script",
+        "Verify emails sent to reporting managers",
+        "Verify email content"
+      ]
+    }
+  }
+}
+
