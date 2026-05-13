@@ -29,12 +29,3 @@ scheduler_events = {
 # Include JS files for doctype views
 
 # Fixtures
-fixtures = [
-	{
-		"dt": "Custom Field",
-		"filters": [
-			["module", "=", "SLA Management"]
-		]
-	}
-]
-
