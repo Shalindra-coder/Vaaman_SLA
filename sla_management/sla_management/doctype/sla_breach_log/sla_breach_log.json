@@ -1,116 +1,161 @@
+
+
+
+
+
+
+
 {
- "actions": [],
- "allow_rename": 1,
- "creation": "2024-01-01 10:00:00",
- "doctype": "DocType",
- "editable_grid": 1,
- "engine": "InnoDB",
- "field_order": [
-  "vertical",
-  "doctype_name",
-  "record_id",
-  "breached_by",
-  "stage",
-  "hours_exceeded",
-  "last_stage_change_on",
-  "breached_on",
-  "reporting_manager_email",
-  "message"
- ],
- "fields": [
-  {
-   "fieldname": "vertical",
-   "fieldtype": "Data",
-   "label": "Vertical",
-   "read_only": 1
-  },
-  {
-   "fieldname": "doctype_name",
-   "fieldtype": "Data",
-   "label": "Doctype Name",
-   "read_only": 1
-  },
-  {
-   "fieldname": "record_id",
-   "fieldtype": "Data",
-   "label": "Record ID",
-   "read_only": 1
-  },
-  {
-   "fieldname": "breached_by",
-   "fieldtype": "Link",
-   "label": "Breached By",
-   "options": "User",
-   "read_only": 1
-  },
-  {
-   "fieldname": "stage",
-   "fieldtype": "Data",
-   "label": "Stage",
-   "read_only": 1
-  },
-  {
-   "fieldname": "hours_exceeded",
-   "fieldtype": "Float",
-   "label": "Hours Exceeded",
-   "read_only": 1
-  },
-  {
-   "fieldname": "last_stage_change_on",
-   "fieldtype": "Datetime",
-   "label": "Last Stage Change On",
-   "read_only": 1
-  },
-  {
-   "fieldname": "breached_on",
-   "fieldtype": "Datetime",
-   "label": "Breached On",
-   "read_only": 1
-  },
-  {
-   "fieldname": "reporting_manager_email",
-   "fieldtype": "Data",
-   "label": "Reporting Manager Email",
-   "read_only": 1
-  },
-  {
-   "fieldname": "message",
-   "fieldtype": "Small Text",
-   "label": "Message"
-  }
- ],
- "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2026-01-20 09:57:18.134094",
- "modified_by": "Administrator",
- "module": "SLA Management",
- "name": "SLA Breach Log",
- "owner": "Administrator",
- "permissions": [
-  {
-   "create": 1,
-   "delete": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "System Manager",
-   "share": 1,
-   "write": 1
-  },
-  {
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
-   "role": "CRM Manager",
-   "share": 1
-  }
- ],
- "row_format": "Dynamic",
- "sort_field": "modified",
- "sort_order": "DESC",
- "states": []
+  "name": "SLA Breach Log",
+  "creation": "2024-01-01 10:00:00",
+  "modified": "2026-05-12 15:36:33.527735",
+  "modified_by": "Administrator",
+  "owner": "Administrator",
+  "docstatus": 0,
+  "idx": 0,
+  "issingle": 0,
+  "is_virtual": 0,
+  "is_tree": 0,
+  "istable": 0,
+  "editable_grid": 1,
+  "track_changes": 1,
+  "module": "SLA Management",
+  "sort_field": "modified",
+  "sort_order": "DESC",
+  "engine": "InnoDB",
+  "doctype": "DocType",
+
+  "fields": [
+
+    {
+      "fieldname": "doctype_name",
+      "label": "Doctype Name",
+      "fieldtype": "Data",
+      "read_only": 1,
+      "in_list_view": 1
+    },
+
+    {
+      "fieldname": "record_id",
+      "label": "Record ID",
+      "fieldtype": "Dynamic Link",
+      "options": "doctype_name",
+      "read_only": 1,
+      "in_list_view": 1
+    },
+
+    {
+      "fieldname": "breached_by",
+      "label": "Breached By",
+      "fieldtype": "Link",
+      "options": "User",
+      "read_only": 1
+    },
+
+    {
+      "fieldname": "stage",
+      "label": "Stage",
+      "fieldtype": "Data",
+      "read_only": 1,
+      "in_list_view": 1
+    },
+
+    {
+      "fieldname": "hours_exceeded",
+      "label": "Hours Exceeded",
+      "fieldtype": "Float",
+      "read_only": 1,
+      "in_list_view": 1
+    },
+
+    {
+      "fieldname": "last_stage_change_on",
+      "label": "Last Stage Change On",
+      "fieldtype": "Datetime",
+      "read_only": 1
+    },
+
+    {
+      "fieldname": "breached_on",
+      "label": "Breached On",
+      "fieldtype": "Datetime",
+      "read_only": 1,
+      "in_list_view": 1
+    },
+
+    {
+      "fieldname": "reporting_manager_email",
+      "label": "Reporting Manager Email",
+      "fieldtype": "Data",
+      "read_only": 1
+    },
+
+    {
+      "fieldname": "status",
+      "label": "Status",
+      "fieldtype": "Select",
+      "options": "Open\nClosed",
+      "default": "Open",
+      "in_list_view": 1
+    },
+
+    {
+      "fieldname": "resolved_on",
+      "label": "Resolved On",
+      "fieldtype": "Datetime",
+      "read_only": 1
+    },
+
+    {
+      "fieldname": "message",
+      "label": "Message",
+      "fieldtype": "Small Text"
+    },
+
+    {
+      "fieldname": "first_user_list",
+      "label": "First Escalation Users",
+      "fieldtype": "Table",
+      "options": "CC Users"
+    },
+
+    {
+      "fieldname": "second_user_list",
+      "label": "Second Escalation Users",
+      "fieldtype": "Table",
+      "options": "CC Users"
+    }
+
+  ],
+
+  "permissions": [
+
+    {
+      "role": "System Manager",
+      "read": 1,
+      "write": 1,
+      "create": 1,
+      "delete": 1,
+      "report": 1,
+      "export": 1,
+      "share": 1,
+      "print": 1,
+      "email": 1
+    },
+
+    {
+      "role": "CRM Manager",
+      "read": 1,
+      "report": 1,
+      "export": 1,
+      "share": 1,
+      "print": 1,
+      "email": 1
+    }
+
+  ],
+
+  "actions": [],
+  "links": [],
+  "states": []
 }
