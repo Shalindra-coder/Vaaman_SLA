@@ -8,7 +8,6 @@
   "applies_to",
   "stage_field",
   "stage_value",
-  "escalate_to",
   "active",
   "first_escalation_hours",
   "users",
@@ -38,12 +37,6 @@
    "in_list_view": 1,
    "label": "Stage Value",
    "placeholder": "e.g., New, Proposal Sent"
-  },
-  {
-   "fieldname": "escalate_to",
-   "fieldtype": "Data",
-   "label": "Escalate To",
-   "placeholder": "Optional escalation email"
   },
   {
    "default": "1",
@@ -77,7 +70,7 @@
   }
  ],
  "links": [],
- "modified": "2026-05-18 11:54:34.101431",
+ "modified": "2026-05-19 14:49:26.109443",
  "modified_by": "Administrator",
  "module": "SLA Management",
  "name": "SLA Rule",
