@@ -1,129 +1,114 @@
 {
-  "name": "SLA Rule",
-  "creation": "2025-11-17 22:57:18.713347",
-  "modified": "2026-05-12 15:16:38.279745",
-  "modified_by": "Administrator",
-  "owner": "Administrator",
-  "docstatus": 0,
-  "idx": 0,
-  "issingle": 0,
-  "is_virtual": 0,
-  "is_tree": 0,
-  "istable": 0,
-  "editable_grid": 1,
-  "track_changes": 0,
-  "module": "SLA Management",
-  "sort_field": "modified",
-  "sort_order": "DESC",
-  "engine": "InnoDB",
-  "doctype": "DocType",
-
-  "fields": [
-    {
-      "fieldname": "applies_to",
-      "label": "Applies To",
-      "fieldtype": "Link",
-      "options": "DocType",
-      "reqd": 1,
-      "in_list_view": 1
-    },
-    {
-      "fieldname": "stage_field",
-      "label": "Stage Field",
-      "fieldtype": "Data",
-      "reqd": 1,
-      "placeholder": "e.g., status or stage",
-      "in_list_view": 1
-    },
-    {
-      "fieldname": "stage_value",
-      "label": "Stage Value",
-      "fieldtype": "Data",
-      "placeholder": "e.g., New, Proposal Sent",
-      "in_list_view": 1
-    },
-    {
-      "fieldname": "escalate_to",
-      "label": "Escalate To",
-      "fieldtype": "Data",
-      "placeholder": "Optional escalation email"
-    },
-    {
-      "fieldname": "active",
-      "label": "Active",
-      "fieldtype": "Check",
-      "default": "1"
-    },
-    {
-      "fieldname": "first_escalation_hours",
-      "label": "First Escalation Hours",
-      "fieldtype": "Int"
-    },
-    {
-      "fieldname": "second_escalation_hours",
-      "label": "Second Escalation Hours",
-      "fieldtype": "Int"
-    },
-    {
-      "fieldname": "send_consolidated_mail",
-      "label": "Send Consolidated Mail",
-      "fieldtype": "Check",
-      "default": "0"
-    },
-    {
-      "fieldname": "apply_cost_center_wise",
-      "label": "Apply Cost Center Wise",
-      "fieldtype": "Check",
-      "default": "0"
-    },
-    {
-      "fieldname": "users",
-      "label": "First Escalation Users",
-      "fieldtype": "Table",
-      "options": "CC Users",
-      "reqd": 1
-    },
-    {
-      "fieldname": "second_escalation_users",
-      "label": "Second Escalation Users",
-      "fieldtype": "Table",
-      "options": "CC Users"
-    },
-    {
-      "fieldname": "message",
-      "label": "Message",
-      "fieldtype": "Small Text",
-      "in_list_view": 1
-    }
-  ],
-
-  "permissions": [
-    {
-      "role": "System Manager",
-      "read": 1,
-      "write": 1,
-      "create": 1,
-      "delete": 1,
-      "report": 1,
-      "export": 1,
-      "share": 1,
-      "print": 1,
-      "email": 1
-    },
-    {
-      "role": "CRM Manager",
-      "read": 1,
-      "write": 1,
-      "create": 1,
-      "report": 1,
-      "export": 1,
-      "share": 1,
-      "print": 1,
-      "email": 1
-    }
-  ],
-
-  "actions": [],
-  "links": [],
-  "states": []
+ "actions": [],
+ "creation": "2025-11-17 22:57:18.713347",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "applies_to",
+  "stage_field",
+  "stage_value",
+  "escalate_to",
+  "active",
+  "first_escalation_hours",
+  "users",
+  "message",
+  "role_without_cost_center"
+ ],
+ "fields": [
+  {
+   "fieldname": "applies_to",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Applies To",
+   "options": "DocType",
+   "reqd": 1
+  },
+  {
+   "fieldname": "stage_field",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Stage Field",
+   "placeholder": "e.g., status or stage",
+   "reqd": 1
+  },
+  {
+   "fieldname": "stage_value",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Stage Value",
+   "placeholder": "e.g., New, Proposal Sent"
+  },
+  {
+   "fieldname": "escalate_to",
+   "fieldtype": "Data",
+   "label": "Escalate To",
+   "placeholder": "Optional escalation email"
+  },
+  {
+   "default": "1",
+   "fieldname": "active",
+   "fieldtype": "Check",
+   "label": "Active"
+  },
+  {
+   "fieldname": "first_escalation_hours",
+   "fieldtype": "Int",
+   "label": "First Escalation Hours"
+  },
+  {
+   "fieldname": "users",
+   "fieldtype": "Table",
+   "label": "Role List",
+   "options": "CC Users",
+   "reqd": 1
+  },
+  {
+   "fieldname": "message",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Message"
+  },
+  {
+   "fieldname": "role_without_cost_center",
+   "fieldtype": "Table",
+   "label": "Role (Without Cost Center)",
+   "options": "CC Users"
+  }
+ ],
+ "links": [],
+ "modified": "2026-05-18 11:54:34.101431",
+ "modified_by": "Administrator",
+ "module": "SLA Management",
+ "name": "SLA Rule",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "CRM Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
 }
