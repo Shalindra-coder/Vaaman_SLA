@@ -1,139 +1,389 @@
 import frappe
-from frappe.utils import get_link_to_form, now_datetime, add_to_date, validate_email_address
+from frappe.utils import (
+    get_link_to_form,
+    now_datetime,
+    add_to_date,
+    validate_email_address
+)
+
 
 def send_daily_sla_emails():
-    """Groups breaches from the last 24 hours by user roles and cost center permissions and sends consolidated emails."""
-    print("SLA Daily Summary Email Job Started...")
-    
-    # 1. Calculate the timestamp for 24 hours ago
+
+    # LAST 24 HOURS
     last_24_hours = add_to_date(now_datetime(), hours=-24)
-    
-    # 2. Fetch all 'Open' SLA Breach Logs created within the last 24 hours
-    breaches = frappe.get_all("SLA Breach Log", 
+
+    breaches = frappe.get_all(
+        "SLA Breach Log",
         filters={
             "status": "Open",
-            "creation": [">", last_24_hours] 
-        }, 
-        fields=["name", "doctype_name", "record_id", "stage", "hours_exceeded"]
+            "creation": [">", last_24_hours]
+        },
+        fields=[
+            "name",
+            "doctype_name",
+            "record_id",
+            "stage",
+            "hours_exceeded"
+        ]
     )
-    
+
     if not breaches:
         print("No new breaches found in the last 24 hours.")
         return
 
-    # Map to store data: { "user_email": [list_of_breach_data] }
     user_report_map = {}
 
     for b in breaches:
-        # Get the Cost Center from the source document (e.g., Purchase Receipt)
-        doc_cost_center = frappe.db.get_value(b.doctype_name, b.record_id, "cost_center")
-        
-        # --- Logic 1: Process Roles WITHOUT Cost Center Restrictions ---
-        # Fetch roles from the 'role_without_cost_center' child table
-        no_cc_roles_data = frappe.get_all("CC Users", 
-            filters={"parent": b.name, "parentfield": "role_without_cost_center"}, 
+
+        # DOCUMENT COST CENTER
+        doc_cost_center = frappe.db.get_value(
+            b.doctype_name,
+            b.record_id,
+            "cost_center"
+        )
+
+        # 1. ROLE WITHOUT COST CENTER RESTRICTION
+
+        no_cc_roles_data = frappe.get_all(
+            "CC Users",
+            filters={
+                "parent": b.name,
+                "parentfield": "role_without_cost_center"
+            },
             fields=["role"]
         )
+
         no_cc_roles = [r.role for r in no_cc_roles_data if r.role]
 
         if no_cc_roles:
-            # Find users assigned to these specific roles
-            users_no_cc = frappe.get_all("Has Role", 
-                filters={"role": ["in", no_cc_roles], "parenttype": "User"}, 
+
+            users = frappe.get_all(
+                "Has Role",
+                filters={
+                    "role": ["in", no_cc_roles],
+                    "parenttype": "User"
+                },
                 fields=["parent as email"]
             )
-            for u in users_no_cc:
-                if validate_email_address(u.email, throw=False):
-                    if u.email not in user_report_map:
-                        user_report_map[u.email] = []
-                    
-                    # Add breach entry directly (No CC check required for these roles)
-                    breach_entry = frappe._dict(b)
-                    breach_entry.doc_cc = doc_cost_center or "N/A"
-                    
-                    # Prevent duplicate entries for the same user in one email
-                    if breach_entry not in user_report_map[u.email]:
-                        user_report_map[u.email].append(breach_entry)
 
-        # --- Logic 2: Process Roles WITH Cost Center Restrictions ---
-        # Fetch Roles from the 'first_user_list' child table
-        cc_restricted_roles_data = frappe.get_all("CC Users", 
-            filters={"parent": b.name, "parentfield": "first_user_list"}, 
-            fields=["role"]
-        )
-        cc_roles = [r.role for r in cc_restricted_roles_data if r.role]
+            for u in users:
 
-        if cc_roles:
-            # Find users assigned to these roles
-            users_with_cc_roles = frappe.get_all("Has Role", 
-                filters={"role": ["in", cc_roles], "parenttype": "User"}, 
-                fields=["parent as email"]
-            )
-            
-            for u in users_with_cc_roles:
                 email = u.email
+
                 if not validate_email_address(email, throw=False):
                     continue
 
-                # Check if this user was already processed in the 'No CC' logic to avoid duplicates
-                if email in user_report_map and any(x.name == b.name for x in user_report_map[email]):
+                if email not in user_report_map:
+                    user_report_map[email] = []
+
+                user_report_map[email].append(
+                    frappe._dict({
+                        "doctype_name": b.doctype_name,
+                        "record_id": b.record_id,
+                        "stage": b.stage,
+                        "hours_exceeded": b.hours_exceeded,
+                        "doc_cc": doc_cost_center or "N/A"
+                    })
+                )
+
+        # 2. ROLE WITH COST CENTER RESTRICTION
+
+        cc_roles_data = frappe.get_all(
+            "CC Users",
+            filters={
+                "parent": b.name,
+                "parentfield": "first_user_list"
+            },
+            fields=["role"]
+        )
+
+        cc_roles = [r.role for r in cc_roles_data if r.role]
+
+        if cc_roles:
+
+            users = frappe.get_all(
+                "Has Role",
+                filters={
+                    "role": ["in", cc_roles],
+                    "parenttype": "User"
+                },
+                fields=["parent as email"]
+            )
+
+            for u in users:
+
+                email = u.email
+
+                if not validate_email_address(email, throw=False):
                     continue
 
-                # Fetch User Permissions for 'Cost Center'
-                user_permissions = frappe.get_all("User Permission",
-                    filters={'user': email, 'allow': "Cost Center"},
+                # USER COST CENTER PERMISSIONS
+                user_permissions = frappe.get_all(
+                    "User Permission",
+                    filters={
+                        "user": email,
+                        "allow": "Cost Center"
+                    },
                     fields=["for_value"]
                 )
-                allowed_ccs = [p.for_value for p in user_permissions]
 
-                # Include if user has no CC restrictions OR document CC matches their allowed list
-                if not allowed_ccs or (doc_cost_center in allowed_ccs):
+                allowed_ccs = {
+                    p.for_value
+                    for p in user_permissions
+                    if p.for_value
+                }
+
+                # STRICT MATCH ONLY
+                if doc_cost_center and doc_cost_center in allowed_ccs:
+
                     if email not in user_report_map:
                         user_report_map[email] = []
-                    
-                    breach_entry = frappe._dict(b)
-                    breach_entry.doc_cc = doc_cost_center or "N/A"
-                    user_report_map[email].append(breach_entry)
 
-    # 6. Send consolidated emails to each identified user
+                    user_report_map[email].append(
+                        frappe._dict({
+                            "doctype_name": b.doctype_name,
+                            "record_id": b.record_id,
+                            "stage": b.stage,
+                            "hours_exceeded": b.hours_exceeded,
+                            "doc_cc": doc_cost_center
+                        })
+                    )
+
+    # SEND EMAILS
+
     sent_count = 0
-    for user_email, logs in user_report_map.items():
-        if not logs: 
+
+    for email, logs in user_report_map.items():
+
+        if not logs:
             continue
-        
+
         try:
-            email_content = render_email_template(logs)
-            
-            # Send the email directly (now=True)
+
+            content = render_email_template(logs)
+
             frappe.sendmail(
-                recipients=user_email,
-                subject=f"Consolidated SLA Breach Summary - {now_datetime().strftime('%Y-%m-%d')}",
-                content=email_content,
-                now=True 
+                recipients=email,
+                subject=f"SLA Breach Summary - {now_datetime().strftime('%Y-%m-%d')}",
+                content=content,
+                now=True
             )
+
             sent_count += 1
-            print(f"Email successfully sent to: {user_email}")
+
+            print(f"Email sent to: {email}")
+
         except Exception as e:
-            print(f"Failed to send email to {user_email}: {str(e)}")
-    
-    print(f"SLA Job Completed. Total users notified: {sent_count}")
+
+            print(f"Failed for {email}: {str(e)}")
+
+    print(f"Completed. Total users notified: {sent_count}")
+
+
+# EMAIL TEMPLATE
 
 def render_email_template(logs):
-    """Generates an HTML table containing all breaches for a specific user."""
-    html = "<h4>The following records have breached SLA in the last 24 hours:</h4>"
-    html += "<table border='1' style='border-collapse: collapse; width: 100%; font-size: 14px; border: 1px solid #ddd;'>"
-    html += "<tr style='background-color: #f8f9fa;'><th>Type</th><th>ID</th><th>Cost Center</th><th>Stage</th><th>Delay (Hrs)</th></tr>"
-    
-    for l in logs:
-        # Generate direct link to the record form
-        link = get_link_to_form(l.doctype_name, l.record_id)
-        html += f"<tr>"
-        html += f"<td style='padding:8px;'>{l.doctype_name}</td>"
-        html += f"<td style='padding:8px;'>{link}</td>"
-        html += f"<td style='padding:8px;'>{l.doc_cc}</td>"
-        html += f"<td style='padding:8px;'>{l.stage}</td>"
-        html += f"<td style='padding:8px;'>{round(l.hours_exceeded, 2)}</td>"
-        html += f"</tr>"
-    
-    html += "</table><p>Please review and process these pending records immediately.</p>"
+
+    html = f"""
+    <div style="
+        font-family: Arial, sans-serif;
+        background-color: #f4f6f9;
+        padding: 20px;
+    ">
+
+        <div style="
+            max-width: 1000px;
+            margin: auto;
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        ">
+
+            <!-- HEADER -->
+
+            <div style="
+                background: linear-gradient(90deg, #ff4d4f, #ff7875);
+                color: white;
+                padding: 20px;
+                text-align: center;
+            ">
+
+                <h2 style="margin:0;">
+                    🚨 SLA Breach Summary Report
+                </h2>
+
+                <p style="
+                    margin-top:8px;
+                    font-size:14px;
+                ">
+                    Last 24 Hours Breach Notification
+                </p>
+
+            </div>
+
+            <!-- BODY -->
+
+            <div style="padding:20px;">
+
+                <p style="
+                    font-size:14px;
+                    color:#444;
+                ">
+                    Hello Team,
+                    <br><br>
+
+                    Below are the SLA breached records identified in the last 24 hours.
+                </p>
+
+                <table style="
+                    width:100%;
+                    border-collapse: collapse;
+                    font-size:14px;
+                ">
+
+                    <thead>
+
+                        <tr style="
+                            background-color:#1f2937;
+                            color:white;
+                        ">
+
+                            <th style="
+                                padding:12px;
+                                border:1px solid #ddd;
+                            ">
+                                Document Type
+                            </th>
+
+                            <th style="
+                                padding:12px;
+                                border:1px solid #ddd;
+                            ">
+                                Record ID
+                            </th>
+
+                            <th style="
+                                padding:12px;
+                                border:1px solid #ddd;
+                            ">
+                                Cost Center
+                            </th>
+
+                            <th style="
+                                padding:12px;
+                                border:1px solid #ddd;
+                            ">
+                                Current Stage
+                            </th>
+
+                            <th style="
+                                padding:12px;
+                                border:1px solid #ddd;
+                            ">
+                                Delay (Hours)
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+    """
+
+    for i, l in enumerate(logs):
+
+        link = get_link_to_form(
+            l.doctype_name,
+            l.record_id
+        )
+
+        row_color = "#f9fafb" if i % 2 == 0 else "#ffffff"
+
+        html += f"""
+
+            <tr style="
+                background-color:{row_color};
+            ">
+
+                <td style="
+                    padding:10px;
+                    border:1px solid #ddd;
+                ">
+                    {l.doctype_name}
+                </td>
+
+                <td style="
+                    padding:10px;
+                    border:1px solid #ddd;
+                ">
+                    {link}
+                </td>
+
+                <td style="
+                    padding:10px;
+                    border:1px solid #ddd;
+                ">
+                    {l.doc_cc}
+                </td>
+
+                <td style="
+                    padding:10px;
+                    border:1px solid #ddd;
+                    color:#d97706;
+                    font-weight:bold;
+                ">
+                    {l.stage}
+                </td>
+
+                <td style="
+                    padding:10px;
+                    border:1px solid #ddd;
+                    color:#dc2626;
+                    font-weight:bold;
+                ">
+                    {round(l.hours_exceeded, 2)} hrs
+                </td>
+
+            </tr>
+        """
+
+    html += """
+
+                    </tbody>
+
+                </table>
+
+                <br>
+
+                <div style="
+                    margin-top:20px;
+                    padding:15px;
+                    background:#fff7ed;
+                    border-left:4px solid #f97316;
+                    color:#7c2d12;
+                    font-size:13px;
+                ">
+                    ⚠ Please review the breached records and take necessary action as soon as possible.
+                </div>
+
+            </div>
+
+            <!-- FOOTER -->
+
+            <div style="
+                background:#f3f4f6;
+                padding:15px;
+                text-align:center;
+                font-size:12px;
+                color:#666;
+            ">
+                This is an automated SLA notification generated by ERP System.
+            </div>
+
+        </div>
+
+    </div>
+    """
+
     return html
