@@ -6,13 +6,15 @@
  "engine": "InnoDB",
  "field_order": [
   "applies_to",
+  "first_escalation_hours",
+  "column_break_wqui",
+  "active",
   "stage_field",
   "stage_value",
-  "active",
-  "first_escalation_hours",
+  "section_break_uvie",
   "users",
-  "message",
-  "role_without_cost_center"
+  "role_without_cost_center",
+  "message"
  ],
  "fields": [
   {
@@ -27,16 +29,16 @@
    "fieldname": "stage_field",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Stage Field",
-   "placeholder": "e.g., status or stage",
+   "label": "Doc Field",
+   "placeholder": "e.g., Work Flow State",
    "reqd": 1
   },
   {
    "fieldname": "stage_value",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Stage Value",
-   "placeholder": "e.g., New, Proposal Sent"
+   "label": "Work Flow Value",
+   "placeholder": "e.g., Draft, Submitted"
   },
   {
    "default": "1",
@@ -67,10 +69,18 @@
    "fieldtype": "Table",
    "label": "Role (Without Cost Center)",
    "options": "CC Users"
+  },
+  {
+   "fieldname": "column_break_wqui",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_uvie",
+   "fieldtype": "Section Break"
   }
  ],
  "links": [],
- "modified": "2026-05-19 14:49:26.109443",
+ "modified": "2026-05-21 09:35:17.472190",
  "modified_by": "Administrator",
  "module": "SLA Management",
  "name": "SLA Rule",

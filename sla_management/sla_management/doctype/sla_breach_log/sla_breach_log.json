@@ -6,13 +6,15 @@
  "engine": "InnoDB",
  "field_order": [
   "doctype_name",
-  "record_id",
   "breached_by",
-  "stage",
   "hours_exceeded",
+  "status",
+  "column_break_pnlb",
+  "record_id",
+  "stage",
   "last_stage_change_on",
   "breached_on",
-  "status",
+  "section_break_dcwi",
   "message",
   "first_user_list",
   "role_without_cost_center"
@@ -94,10 +96,18 @@
    "label": "Role (Without Cost Center)",
    "options": "CC Users",
    "read_only": 1
+  },
+  {
+   "fieldname": "column_break_pnlb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_dcwi",
+   "fieldtype": "Section Break"
   }
  ],
  "links": [],
- "modified": "2026-05-18 11:59:45.747180",
+ "modified": "2026-05-21 09:39:18.723243",
  "modified_by": "Administrator",
  "module": "SLA Management",
  "name": "SLA Breach Log",
