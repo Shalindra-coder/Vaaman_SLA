@@ -12,16 +12,17 @@
   {
    "fetch_from": "user_name.role_profile_name",
    "fieldname": "role",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Role"
+   "label": "Role",
+   "options": "Role"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-05-18 09:41:15.859780",
+ "modified": "2026-05-27 13:06:24.574013",
  "modified_by": "Administrator",
  "module": "SLA Management",
  "name": "CC Users",
