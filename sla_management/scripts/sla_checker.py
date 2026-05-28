@@ -15,7 +15,9 @@ def process_sla_rules():
         # 2. Filter records of the target Doctype based on the rule configuration
         filters = {
             rule.stage_field: rule.stage_value,
-            "docstatus": ["<", 2] # Exclude cancelled documents
+            "docstatus": ["<", 2],
+            "modified": [">=", "2026-04-01 00:00:00"] 
+
         }
         
         target_docs = frappe.get_all(
