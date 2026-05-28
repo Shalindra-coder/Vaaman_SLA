@@ -39,7 +39,8 @@
    "in_list_view": 1,
    "label": "Work Flow Value",
    "options": "Workflow State",
-   "placeholder": "e.g., Draft, Submitted"
+   "placeholder": "e.g., Draft, Submitted",
+   "reqd": 1
   },
   {
    "default": "1",
@@ -50,7 +51,8 @@
   {
    "fieldname": "first_escalation_hours",
    "fieldtype": "Int",
-   "label": "First Escalation Hours"
+   "label": "First Escalation Hours",
+   "reqd": 1
   },
   {
    "fieldname": "users",
@@ -63,13 +65,15 @@
    "fieldname": "message",
    "fieldtype": "Small Text",
    "in_list_view": 1,
-   "label": "Message"
+   "label": "Message",
+   "reqd": 1
   },
   {
    "fieldname": "role_without_cost_center",
    "fieldtype": "Table",
    "label": "Role (Without Cost Center)",
-   "options": "CC Users"
+   "options": "CC Users",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_wqui",
@@ -81,7 +85,7 @@
   }
  ],
  "links": [],
- "modified": "2026-05-27 16:15:58.892642",
+ "modified": "2026-05-28 09:36:49.833462",
  "modified_by": "Administrator",
  "module": "SLA Management",
  "name": "SLA Rule",
