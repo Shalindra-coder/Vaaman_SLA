@@ -1,6 +1,3 @@
-
-
-
 import frappe
 from frappe.utils import now_datetime, get_datetime
 
@@ -75,6 +72,16 @@ def log_sla_breach(doc, rule, formatted_time):
     if rule.role_without_cost_center:
         for r in rule.role_without_cost_center:
             log.append("role_without_cost_center", {"role": r.role})
+
+    log.set("email_id", [])
+    if rule.get("email_id"):
+        for e in rule.email_id:
+            log.append("email_id", {"email_id": e.email_id})
+
+    log.set("email_idwithout_cost_center", [])
+    if rule.get("email_idwithout_cost_centerf"):
+        for e in rule.email_idwithout_cost_centerf:
+            log.append("email_idwithout_cost_center", {"email_id": e.email_id})
 
     log.save(ignore_permissions=True)
     frappe.db.commit()

@@ -17,7 +17,9 @@
   "section_break_dcwi",
   "message",
   "first_user_list",
-  "role_without_cost_center"
+  "email_id",
+  "role_without_cost_center",
+  "email_idwithout_cost_center"
  ],
  "fields": [
   {
@@ -104,10 +106,22 @@
   {
    "fieldname": "section_break_dcwi",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "email_id",
+   "fieldtype": "Table",
+   "label": "Email ID",
+   "options": "Email ID"
+  },
+  {
+   "fieldname": "email_idwithout_cost_center",
+   "fieldtype": "Table",
+   "label": "Email ID(Without Cost Center)",
+   "options": "Email ID"
   }
  ],
  "links": [],
- "modified": "2026-05-28 14:46:27.560081",
+ "modified": "2026-05-29 10:32:48.171892",
  "modified_by": "Administrator",
  "module": "SLA Management",
  "name": "SLA Breach Log",

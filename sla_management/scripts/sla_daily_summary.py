@@ -149,6 +149,73 @@ def send_daily_sla_emails():
                         })
                     )
 
+        # --- CHANGE START: EMAIL ID WITH COST CENTER RESTRICTION ---
+        email_with_cc_data = frappe.get_all(
+            "Email ID",
+            filters={
+                "parent": b.name,
+                "parentfield": "email_id"
+            },
+            fields=["email_id"]
+        )
+
+        for e in email_with_cc_data:
+            email = e.email_id
+            if not validate_email_address(email, throw=False):
+                continue
+
+            # Check Cost Center Permission
+            user_permissions = frappe.get_all(
+                "User Permission",
+                filters={"user": email, "allow": "Cost Center"},
+                fields=["for_value"]
+            )
+            allowed_ccs = {p.for_value for p in user_permissions if p.for_value}
+
+            if doc_cost_center and doc_cost_center in allowed_ccs:
+                if email not in user_report_map:
+                    user_report_map[email] = []
+                
+                user_report_map[email].append(
+                    frappe._dict({
+                        "doctype_name": b.doctype_name,
+                        "record_id": b.record_id,
+                        "stage": b.stage,
+                        "hours_exceeded": b.hours_exceeded,
+                        "doc_cc": doc_cost_center
+                    })
+                )
+        # --- CHANGE END ---
+
+        email_no_cc_data = frappe.get_all(
+            "Email ID", # Child Doctype name
+            filters={
+                "parent": b.name,
+                "parentfield": "email_idwithout_cost_center"
+            },
+            fields=["email_id"]
+        )
+
+        for e in email_no_cc_data:
+            email = e.email_id
+            if not validate_email_address(email, throw=False):
+                continue
+
+            if email not in user_report_map:
+                user_report_map[email] = []
+
+            # Isme bina permission check kiye data add hoga
+            user_report_map[email].append(
+                frappe._dict({
+                    "doctype_name": b.doctype_name,
+                    "record_id": b.record_id,
+                    "stage": b.stage,
+                    "hours_exceeded": b.hours_exceeded,
+                    "doc_cc": doc_cost_center or "N/A"
+                })
+            )
+        # --- CHANGE END ---
+
     # SEND EMAILS
 
     sent_count = 0
@@ -300,6 +367,11 @@ def render_email_template(logs):
 
         row_color = "#f9fafb" if i % 2 == 0 else "#ffffff"
 
+        try:
+            delay_display = f"{round(float(l.hours_exceeded), 2)} hrs"
+        except:
+            delay_display = f"{l.hours_exceeded} hrs"
+
         html += f"""
 
             <tr style="
@@ -342,7 +414,7 @@ def render_email_template(logs):
                     color:#dc2626;
                     font-weight:bold;
                 ">
-                    {round(l.hours_exceeded, 2)} hrs
+                    {delay_display}
                 </td>
 
             </tr>

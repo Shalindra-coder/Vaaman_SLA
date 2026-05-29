@@ -13,7 +13,9 @@
   "stage_value",
   "section_break_uvie",
   "users",
+  "email_id",
   "role_without_cost_center",
+  "email_idwithout_cost_centerf",
   "message"
  ],
  "fields": [
@@ -82,10 +84,22 @@
   {
    "fieldname": "section_break_uvie",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "email_id",
+   "fieldtype": "Table",
+   "label": "Email ID",
+   "options": "Email ID"
+  },
+  {
+   "fieldname": "email_idwithout_cost_centerf",
+   "fieldtype": "Table",
+   "label": "Email ID(without cost Center)",
+   "options": "Email ID"
   }
  ],
  "links": [],
- "modified": "2026-05-28 09:36:49.833462",
+ "modified": "2026-05-29 10:30:54.014882",
  "modified_by": "Administrator",
  "module": "SLA Management",
  "name": "SLA Rule",
