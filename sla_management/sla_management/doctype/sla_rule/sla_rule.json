@@ -7,6 +7,7 @@
  "field_order": [
   "applies_to",
   "first_escalation_hours",
+  "applied_suterday_and_sunday",
   "column_break_wqui",
   "active",
   "stage_field",
@@ -96,10 +97,16 @@
    "fieldtype": "Table",
    "label": "Email ID(without cost Center)",
    "options": "Email ID"
+  },
+  {
+   "default": "0",
+   "fieldname": "applied_suterday_and_sunday",
+   "fieldtype": "Check",
+   "label": "Applied Saterday and Sunday"
   }
  ],
  "links": [],
- "modified": "2026-05-29 10:30:54.014882",
+ "modified": "2026-06-01 11:20:32.403317",
  "modified_by": "Administrator",
  "module": "SLA Management",
  "name": "SLA Rule",
