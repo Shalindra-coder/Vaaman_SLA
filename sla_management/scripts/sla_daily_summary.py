@@ -14,7 +14,7 @@ from collections import defaultdict
 def send_daily_sla_emails():
     """
     Sends consolidated SLA breach report to enabled users.
-    Grouping: By Document Type with Counts.
+    Grouping: By Document Type with Counts and Stage-wise sorting.
     """
 
     # 1. Fetch breaches MODIFIED in the last 24 hours that are still 'Open'
@@ -116,8 +116,9 @@ def send_daily_sla_emails():
 
 def render_email_template(logs):
     """
-    Highly Attractive Professional HTML Template Grouped by Doctype.
+    Groups data by Doctype, sorts by Stage, and displays stage-wise counts in header.
     """
+    # Group by Doctype
     grouped_data = defaultdict(list)
     for l in logs:
         grouped_data[l['doctype_name']].append(l)
@@ -126,27 +127,40 @@ def render_email_template(logs):
     <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; padding: 20px;">
         <div style="max-width: 1100px; margin: auto; background: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
             
-            <!-- Header Section -->
             <div style="background: linear-gradient(90deg, #ff4d4f, #ff7875); color: white; padding: 30px; text-align: center;">
                 <h2 style="margin:0; font-size: 26px; letter-spacing: 1px; font-weight: 700;">🚨 SLA BREACH NOTIFICATION</h2>
                 <p style="margin: 8px 0 0; opacity: 0.9; font-size: 16px;">Consolidated Priority Action Report</p>
             </div>
 
-            <!-- Body Content -->
             <div style="padding: 35px;">
                 <p style="font-size: 17px; color: #1a202c; font-weight: 600;">Dear Team,</p>
                 <p style="font-size: 15px; color: #4a5568; line-height: 1.6;">
-                    This is a consolidated summary of <b>SLA breaches</b> associated with your profile. These records require <b>immediate intervention</b>.
+                    This is a consolidated summary of <b>SLA breaches</b>. Records are grouped by Document Type and <b>sorted by Workflow Stage</b>.
                 </p>
     """
 
     for doctype, doc_logs in grouped_data.items():
+        # 1. Calculate Stage-wise counts
+        stage_counts = defaultdict(int)
+        for log in doc_logs:
+            stage_counts[log['stage']] += 1
+        
+        # Format the summary string (e.g., "Draft: 2 | Pending: 1")
+        summary_items = [f"{stg}: {count}" for stg, count in stage_counts.items()]
+        summary_str = " | ".join(summary_items)
+
+        # 2. Sort logs by stage so they appear together
+        sorted_logs = sorted(doc_logs, key=lambda x: x['stage'])
+
         html += f"""
-                <div style="margin-top: 40px; margin-bottom: 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px;">
+                <div style="margin-top: 40px; margin-bottom: 5px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px;">
                     <span style="font-size: 18px; font-weight: 700; color: #2d3748;">📂 {doctype}</span>
                     <span style="background-color: #fee2e2; color: #b91c1c; padding: 2px 10px; border-radius: 20px; font-size: 13px; font-weight: bold; margin-left: 10px;">
-                        {len(doc_logs)} Breaches
+                        {len(doc_logs)} Total Breaches
                     </span>
+                </div>
+                <div style="margin-bottom: 10px; font-size: 12px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                    📍 Breakdown: {summary_str}
                 </div>
                 
                 <div style="margin-bottom: 30px; overflow-x: auto;">
@@ -162,16 +176,16 @@ def render_email_template(logs):
                         </thead>
                         <tbody>
         """
-        for i, l in enumerate(doc_logs):
+        for i, l in enumerate(sorted_logs):
             link = get_link_to_form(l['doctype_name'], l['record_id'])
             
-            # Delay Formatting (8-hour day logic with "Days Hours" format)
+            # Delay Formatting (8-hour day logic)
             try:
                 time_parts = str(l['hours_exceeded']).split(':')
                 total_h = int(time_parts[0])
-                d = int(total_h // 8) # Day calculated as 8 hours
+                d = int(total_h // 8)
                 h = int(total_h % 8)
-                delay = f"{d} Days {h} Hours"
+                delay = f"{d}d {h}h"
             except:
                 delay = l['hours_exceeded']
 
@@ -191,17 +205,15 @@ def render_email_template(logs):
         html += "</tbody></table></div>"
 
     html += """
-                <!-- Action Box -->
                 <div style="background-color: #fff5f5; border-left: 5px solid #ff4d4f; padding: 25px; margin-top: 30px; border-radius: 6px;">
                     <h4 style="margin: 0 0 12px 0; color: #c53030; font-size: 16px;">📌 Required Action:</h4>
                     <ul style="margin: 0; color: #4a5568; font-size: 14px; line-height: 1.7;">
-                        <li>Click on the <b>Record ID</b> to investigate the cause of the breach.</li>
-                        <li>Update the workflow stage or resolve the document to stop the breach timer.</li>
+                        <li>Review records grouped by stage above.</li>
+                        <li>Update the workflow stage or resolve the document to clear the breach.</li>
                     </ul>
                 </div>
             </div>
 
-            <!-- Footer Section -->
             <div style="background-color: #f8fafc; padding: 25px; text-align: center; border-top: 1px solid #edf2f7;">
                 <p style="margin: 0; font-size: 12px; color: #94a3b8;">
                     This is an automated consolidated notification. Please do not reply.
